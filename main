@@ -1,0 +1,20 @@
+import pandas as pd
+from sklearn import tree
+import seaborn as sns
+from sklearn.ensemble import RandomForestClassifier
+
+df = pd.read_csv('/content/drive/MyDrive/Colab Notebooks/students.csv', delimiter =',')
+df_test = pd.read_csv('/content/drive/MyDrive/Colab Notebooks/students_test.csv', delimiter=',')
+
+df_cut = df[['Growth', 'Weight', 'Sex', 'Hair length', 'Children number']]
+df_cut = df_cut.dropna()
+df_test_cut = df_test[['Growth', 'Weight', 'Sex', 'Hair length', 'Children number']]
+df_test_cut = df_test_cut.dropna()
+
+model = RandomForestClassifier(max_depth=2, random_state=0)
+
+model.fit(df_cut[['Growth', 'Weight', 'Hair length', 'Children number']].values.reshape(-1,4),y=df_cut['Sex'].values)
+
+df_test_cut['Predict'] = model.predict(df_test_cut[['Growth', 'Weight', 'Hair length', 'Children number']].values.reshape(-1,4))
+
+pd.crosstab(df_test_cut['Sex'], df_test_cut['Predict'])
